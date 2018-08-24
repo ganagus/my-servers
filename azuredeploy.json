@@ -1,0 +1,556 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "publicIPAddressDnsName": {
+      "type": "string",
+      "minLength": 1,
+      "metadata": {
+        "description": "Globally unique DNS Name for the Public IP used to access the Virtual Machine."
+      }
+    },
+    "numberOfInstances": {
+      "type": "int",
+      "minValue": 1,
+      "defaultValue": 1,
+      "metadata": {
+        "description": "Number of VM instances to be created behind load balancer."
+      }
+    },
+    "adminUsername": {
+      "type": "string",
+      "minLength": 1,
+      "metadata": {
+        "description": "Admin user name for VM."
+      }
+    },
+    "adminPassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Admin password for database VM and mysql root user."
+      }
+    },
+    "dbUserPassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Database user password for application connection."
+      }
+    },
+    "sshKeyData": {
+      "type": "securestring",
+      "metadata": {
+        "description": "SSH String."
+      }
+    },
+    "wordpressDomainName": {
+      "type": "string",
+      "minLength": 1,
+      "metadata": {
+        "description": "Domain name for wordpress site."
+      }
+    }
+  },
+  "variables": {
+    "frontendNsgName": "FrontEndNsg",
+    "backendNsgName": "BackEndNsg",
+    "availabilitySetName": "AvailabilitySet",
+    "virtualNetworkName": "VirtualNetwork",
+    "virtualNetworkId": "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]",
+    "frontendSubnetName": "FrontEnd",
+    "frontendSubnetRef": "[concat(variables('virtualNetworkId'), '/subnets/', variables('frontendSubnetName'))]",
+    "backendSubnetName": "BackEnd",
+    "backendSubnetRef": "[concat(variables('virtualNetworkId'), '/subnets/', variables('backendSubnetName'))]",
+    "publicIPAddressName": "PublicIPAddress",
+    "lbName": "LoadBalancer",
+    "lbRule": "HTTP",
+    "lbBackendPool": "lbBackendPool",
+    "lbId": "[resourceId('Microsoft.Network/loadBalancers', variables('lbName'))]",
+    "lbPoolId": "[concat(variables('lbId'),'/backendAddressPools/',variables('lbBackendPool'))]",
+    "lbProbeId": "[concat(variables('lbId'),'/probes/lbProbe')]",
+    "ipConfigId": "[concat(variables('lbId'),'/frontendIPConfigurations/LoadBalancerFrontEnd')]",
+    "frontendNetworkInterfaceName": "FrontendNetworkInterface",
+    "vmSize": "Standard_B2s",
+    "vmImagePublisher": "Canonical",
+    "vmImageOffer": "UbuntuServer",
+    "vmSku": "16.04-LTS",
+    "vmStorageAccountType": "Premium_LRS",
+    "frontendVmName": "ubuntu-web",
+    "sshKeyPath": "[concat('/home/',parameters('adminUsername'),'/.ssh/authorized_keys')]",
+    "backendNetworkInterfaceName": "BackendNetworkInterface",
+    "backendVmName": "ubuntu-db",
+    "backendIPAddress": "192.168.102.4"
+  },
+  "resources": [
+    {
+      "apiVersion": "2017-06-01",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "name": "[variables('frontendNsgName')]",
+      "location": "[resourceGroup().location]",
+      "tags": {
+        "displayName": "front-end-nsg"
+      },
+      "properties": {
+          "securityRules": [
+            {
+              "name": "http",
+              "properties": {
+                "description": "HTTP endpoint",
+                "protocol": "Tcp",
+                "sourcePortRange": "*",
+                "destinationPortRange": "80",
+                "sourceAddressPrefix": "*",
+                "destinationAddressPrefix": "*",
+                "access": "Allow",
+                "priority": 100,
+                "direction": "Inbound"  
+              }
+            },
+            {
+              "name": "https",
+              "properties": {
+                "description": "HTTPS endpoint",
+                "protocol": "Tcp",
+                "sourcePortRange": "*",
+                "destinationPortRange": "443",
+                "sourceAddressPrefix": "*",
+                "destinationAddressPrefix": "*",
+                "access": "Allow",
+                "priority": 200,
+                "direction": "Inbound"  
+              }
+            },
+            {
+              "name": "ssh",
+              "properties": {
+                "description": "SSH endpoint",
+                "protocol": "Tcp",
+                "sourcePortRange": "*",
+                "destinationPortRange": "22",
+                "sourceAddressPrefix": "*",
+                "destinationAddressPrefix": "*",
+                "access": "Allow",
+                "priority": 300,
+                "direction": "Inbound"
+              }
+            }  
+          ]
+      }
+    },
+    {
+      "apiVersion": "2017-06-01",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "name": "[variables('backendNsgName')]",
+      "location": "[resourceGroup().location]",
+      "tags": {
+        "displayName": "back-end-nsg"
+      },
+      "properties": {
+          "securityRules": []
+      }
+    },
+    {
+      "apiVersion": "2017-12-01",
+      "type": "Microsoft.Compute/availabilitySets",
+      "sku": {
+        "name": "Aligned"
+      },
+      "name": "[variables('availabilitySetName')]",
+      "location": "[resourceGroup().location]",
+      "tags": {
+          "displayName": "availability-set"
+      },
+      "properties": {
+        "platformUpdateDomainCount": 5,
+        "platformFaultDomainCount": 2
+      }
+    },
+    {
+        "apiVersion": "2015-06-15",
+        "type": "Microsoft.Network/virtualNetworks",
+        "name": "[variables('virtualNetworkName')]",
+        "location": "[resourceGroup().location]",
+        "dependsOn": [
+          "[concat('Microsoft.Network/networkSecurityGroups/', variables('frontendNsgName'))]",
+          "[concat('Microsoft.Network/networkSecurityGroups/', variables('backendNsgName'))]"
+        ],
+        "tags": {
+            "displayName": "virtual-network"
+        },
+        "properties": {
+            "addressSpace": {
+                "addressPrefixes": [
+                    "192.168.0.0/16"
+                ]
+            },
+            "subnets": [
+                {
+                    "name": "[variables('frontendSubnetName')]",
+                    "properties": {
+                        "addressPrefix": "192.168.101.0/24",
+                        "networkSecurityGroup": {
+                          "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('frontendNsgName'))]"
+                        }
+                    }
+                },
+                {
+                    "name": "[variables('backendSubnetName')]",
+                    "properties": {
+                        "addressPrefix": "192.168.102.0/24",
+                        "networkSecurityGroup": {
+                          "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('backendNsgName'))]"
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    {
+        "apiVersion": "2015-06-15",
+        "type": "Microsoft.Network/publicIPAddresses",
+        "name": "[variables('publicIPAddressName')]",
+        "location": "[resourceGroup().location]",
+        "tags": {
+            "displayName": "public-ip-address"
+        },
+        "properties": {
+            "publicIPAllocationMethod": "Dynamic",
+            "dnsSettings": {
+                "domainNameLabel": "[parameters('publicIPAddressDnsName')]"
+            }
+        }
+    },
+    {
+      "apiVersion": "2018-02-01",
+      "type": "Microsoft.Network/loadBalancers",
+      "name": "[variables('lbName')]",
+      "location": "[resourceGroup().location]",
+      "tags": {
+        "displayName": "load-balancer"
+      },
+      "dependsOn": [
+        "[variables('virtualNetworkId')]",
+        "[variables('publicIpAddressName')]"
+      ],
+      "sku": {
+        "name": "Basic",
+        "tier": "regional"
+      },
+      "properties": {
+        "frontendIPConfigurations": [
+          {
+            "name": "LoadBalancerFrontend",
+            "properties": {
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName'))]"
+              }
+            }
+          }
+        ],
+        "backendAddressPools": [
+          {
+            "name": "[variables('lbBackendPool')]"
+          }
+        ],
+        "loadBalancingRules": [
+          {
+            "name": "[variables('lbRule')]",
+            "properties": {
+              "frontendIPConfiguration": {
+                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('lbName')), '/frontendIPConfigurations/LoadBalancerFrontend')]"
+              },
+              "backendAddressPool": {
+                "id": "[variables('lbPoolId')]"
+              },
+              "protocol": "Tcp",
+              "frontendPort": 80,
+              "backendPort": 80,
+              "enableFloatingIP": false,
+              "idleTimeoutInMinutes": 5,
+              "probe": {
+                "id": "[variables('lbProbeId')]"
+              }
+            }
+          }
+        ],
+        "probes": [
+          {
+            "properties": {
+              "protocol": "Tcp",
+              "port": 80,
+              "intervalInSeconds": 15,
+              "numberOfProbes": 2
+            },
+            "name": "lbProbe"
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "2015-06-15",
+      "type": "Microsoft.Network/loadBalancers/inboundNatRules",
+      "name": "[concat(variables('lbName'), '/', 'SSH-VM', copyIndex(1))]",
+      "location": "[resourceGroup().location]",
+      "tags": {
+        "displayName": "load-balancer-nat-rule"
+      },
+      "copy": {
+        "name": "lbNatLoop",
+        "count": "[parameters('numberOfInstances')]"
+      },
+      "dependsOn": [
+        "[concat('Microsoft.Network/loadBalancers/', variables('lbName'))]"
+      ],
+      "properties": {
+        "frontendIPConfiguration": {
+          "id": "[variables('ipConfigId')]"
+        },
+        "protocol": "tcp",
+        "frontendPort": "[copyIndex(5001)]",
+        "backendPort": 22,
+        "enableFloatingIP": false
+      }
+    },
+    {
+      "apiVersion": "2015-06-15",
+      "type": "Microsoft.Network/networkInterfaces",
+      "name": "[concat(variables('frontendNetworkInterfaceName'), copyIndex(1))]",
+      "location": "[resourceGroup().location]",
+      "tags": {
+          "displayName": "frontend-network-interface"
+      },
+      "copy": {
+        "name": "nicLoop",
+        "count": "[parameters('numberOfInstances')]"
+      },
+      "dependsOn": [
+        "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
+        "[concat('Microsoft.Network/loadBalancers/', variables('lbName'))]",
+        "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'))]",
+        "[concat('Microsoft.Network/loadBalancers/', variables('lbName'), '/inboundNatRules/', 'SSH-VM', copyIndex(1))]"
+      ],
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig",
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic",
+              "subnet": {
+                "id": "[variables('frontendSubnetRef')]"
+              },
+              "loadBalancerBackendAddressPools": [
+                { "id": "[variables('lbPoolId')]" }
+              ],
+              "loadBalancerInboundNatRules": [
+                { "id": "[concat(variables('lbId'),'/inboundNatRules/SSH-VM', copyIndex(1))]" }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines",
+      "name": "[concat(variables('frontendVmName'), copyIndex(1))]",
+      "apiVersion": "2017-03-30",
+      "location": "[resourceGroup().location]",
+      "copy": {
+        "name": "virtualMachineLoop",
+        "count": "[parameters('numberOfInstances')]"
+      },
+      "dependsOn": [
+        "[concat('Microsoft.Compute/availabilitySets/', variables('availabilitySetName'))]",
+        "nicLoop"
+      ],
+      "tags": {
+        "displayName": "frontend-virtual-machine"
+      },
+      "properties": {
+        "availabilitySet": {
+          "id": "[resourceId('Microsoft.Compute/availabilitySets', variables('availabilitySetName'))]"
+        },
+        "hardwareProfile": {
+          "vmSize": "[variables('vmSize')]"
+        },
+        "osProfile": {
+          "computerName": "[concat(variables('frontendVmName'), copyIndex(1))]",
+          "adminUsername": "[parameters('adminUserName')]",
+          "linuxConfiguration": {
+            "disablePasswordAuthentication": true,
+            "ssh": {
+              "publicKeys": [
+                {
+                  "path": "[variables('sshKeyPath')]",
+                  "keyData": "[parameters('sshKeyData')]"
+                }
+              ]
+            }
+          }
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "[variables('vmImagePublisher')]",
+            "offer": "[variables('vmImageOffer')]",
+            "sku": "[variables('vmSku')]",
+            "version": "latest"
+          },
+          "osDisk": {
+            "name": "[concat(variables('frontendVmName'), copyIndex(1), '-ManagedDisk')]",
+            "createOption": "FromImage",
+            "caching": "ReadWrite",
+            "managedDisk": {
+              "storageAccountType": "[variables('vmStorageAccountType')]"
+            }
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('frontendNetworkInterfaceName'), copyindex(1)))]"
+            }
+          ]
+        }
+      },
+      "resources": [
+        {
+          "apiVersion": "2017-03-30",
+          "type": "extensions",
+          "name": "config-app",
+          "location": "[resourceGroup().location]",
+          "dependsOn": [
+            "[concat('Microsoft.Compute/virtualMachines/', concat(variables('frontendVmName'), copyindex(1)))]"
+          ],
+          "tags": {
+            "displayName": "frontend-config-app"
+          },
+          "properties": {
+            "publisher": "Microsoft.Azure.Extensions",
+            "type": "CustomScript",
+            "typeHandlerVersion": "2.0",
+            "autoUpgradeMinorVersion": true,
+            "settings": {
+              "fileUris": [
+                "https://raw.githubusercontent.com/icgid/poc-iac-azure-linux-script/master/scripts/configure-web-server.sh"
+              ]
+            },
+            "protectedSettings": {
+              "commandToExecute": "[concat('sudo bash configure-web-server.sh ', parameters('wordpressDomainName'), ' ', parameters('dbUserPassword'), ' ', variables('backendIPAddress'))]"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "Microsoft.Network/networkInterfaces",
+      "name": "[variables('backendNetworkInterfaceName')]",
+      "apiVersion": "2018-02-01",
+      "location": "[resourceGroup().location]",
+      "tags": {
+        "displayName": "backend-network-interface"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]",
+        "[resourceId('Microsoft.Network/networkSecurityGroups', variables('backendNsgName'))]"
+      ],
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "backendIPConfig",
+            "properties": {
+              "privateIPAddress": "[variables('backendIPAddress')]",
+              "privateIPAllocationMethod": "Dynamic",
+              "subnet": {
+                "id": "[variables('backendSubnetRef')]"
+              },
+              "privateIPAddressVersion": "IPv4"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "2017-03-30",
+      "type": "Microsoft.Compute/virtualMachines",
+      "name": "[variables('backendVmName')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkInterfaces', variables('backendNetworkInterfaceName'))]"
+      ],
+      "tags": {
+        "displayName": "backend-virtual-machine"
+      },
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "[variables('vmSize')]"
+        },
+        "osProfile": {
+          "computerName": "[variables('backendVmName')]",
+          "adminUsername": "[parameters('adminUserName')]",
+          "adminPassword": "[parameters('adminPassword')]",
+          "linuxConfiguration": {
+            "disablePasswordAuthentication": false,
+            "ssh": {
+              "publicKeys": [
+                {
+                  "path": "[variables('sshKeyPath')]",
+                  "keyData": "[parameters('sshKeyData')]"
+                }
+              ]
+            }
+          }
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "[variables('vmImagePublisher')]",
+            "offer": "[variables('vmImageOffer')]",
+            "sku": "[variables('vmSku')]",
+            "version": "latest"
+          },
+          "osDisk": {
+            "name": "[concat(variables('backendVmName'), '-ManagedDisk')]",
+            "createOption": "FromImage",
+            "caching": "ReadWrite",
+            "managedDisk": {
+              "storageAccountType": "[variables('vmStorageAccountType')]"
+            }
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('backendNetworkInterfaceName')))]"
+            }
+          ]
+        }
+      },
+      "resources": [
+        {
+          "apiVersion": "2017-03-30",
+          "type": "extensions",
+          "name": "config-app",
+          "location": "[resourceGroup().location]",
+          "dependsOn": [
+            "[concat('Microsoft.Compute/virtualMachines/', concat(variables('backendVmName')))]"
+          ],
+          "tags": {
+            "displayName": "backend-config-app"
+          },
+          "properties": {
+            "publisher": "Microsoft.Azure.Extensions",
+            "type": "CustomScript",
+            "typeHandlerVersion": "2.0",
+            "autoUpgradeMinorVersion": true,
+            "settings": {
+              "fileUris": [
+                "https://raw.githubusercontent.com/icgid/poc-iac-azure-linux-script/master/scripts/configure-db-server.sh"
+              ]
+            },
+            "protectedSettings": {
+              "commandToExecute": "[concat('sudo bash configure-db-server.sh ', parameters('adminPassword'), ' ', parameters('dbUserPassword'))]"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "outputs": {}
+}

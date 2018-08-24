@@ -1,0 +1,24 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "publicIPAddressDnsName": {
+      "value": "p7ut65rf"
+    },
+    "adminUsername": {
+      "value": "agus"
+    },
+    "adminPassword": {
+      "value": "Linuxsample123"
+    },
+    "dbUserPassword": {
+      "value": "Linuxsample123"
+    },
+    "sshKeyData": {
+      "value": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAgEAs1z/LMdCJkOsQQ5GxxerXIFWJo2E/GGQTI9kVuo7NJgjkdOpIpG+2NEfVNSykkMDb3X+9hXUHpUA8BTIBXxuqSCUl50vmFmYheSd8/bWQ17MAtPfcf0gHxjzW93aYDxTC0fErc46AOriuFpzbFETqKYBc5UwrS1ADs8xMmdAP0Z1JaBw/S33K8vn45IsP7x0C5c9RcNYEea0DBbR0pTv6w+ua7ptjv3a3/MRqOGau+VOL2FXUIrVUyEBxPGdb4H4zzvss+GNQjGifsh6k9RTvopwzVeg/ifRPl1RrS6ttXjv+lLXPdFZ+I/RgJpzHwhDGZgriM4ONdcDLfeiThVxehqKUA0U0Rg8nc4PP1v/psTQUaWkx1VxyWH28deHZMUQnm5FWggNc/5VcUCJjYywXRowSI5GR5VcGWnjdOlUjUfcvEodEYFMDMsK7iT8NQRsoCfvDl78w6Q0+/xlzOjwRagJmU82aca8NADunv4cwAhPI07TOrlZ4geU2FUD2f650eBcThVoS/1IiS4bUZzMzHHQXQR+DA1RPuvy9R04MblN13RZ4R/GVpSfXT8atlf9ChTX5D7qau4F3x1jeDkJiv1crAX9KHE0tO0Bz6P1ye/YGggl2fqNIjenuEVgozieol48F7pvVFnJxfgQzUPM0j8GTWbF0u8vSmlxhbdTjYs="
+    },
+    "wordpressDomainName": {
+      "value": "wordpress.demo"
+    }
+  }
+}
