@@ -2,7 +2,7 @@ server {
     listen 80;
     listen [::]:80;
 
-    server_name aprojectguru.com www.aprojectguru.com;
+    server_name <domainName> www.<domainName>;
 
     root /var/www/aprojectguru;
     index index.php;

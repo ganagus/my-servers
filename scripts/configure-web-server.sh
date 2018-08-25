@@ -15,14 +15,15 @@ sudo apt-get install -y php-fpm php-mysql
 sudo sed -i "s/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g" /etc/php/7.0/fpm/php.ini
 sudo service nginx start
 sudo systemctl restart php7.0-fpm
-sudo wget https://raw.githubusercontent.com/ganagus/my-servers/master/configs/nginx/aprojectguru -O /etc/nginx/sites-available/wordpress
+sudo wget https://raw.githubusercontent.com/ganagus/my-servers/master/configs/nginx/aprojectguru -O /etc/nginx/sites-available/aprojectguru
+sudo sed -i "s/<domainName>/$1/g" /etc/nginx/sites-available/aprojectguru
 sudo ln -s /etc/nginx/sites-available/wordpress /etc/nginx/sites-enabled/
 sudo systemctl reload nginx
 
 # Upload existing wordpress configuration file
 sudo wget https://raw.githubusercontent.com/ganagus/my-servers/master/configs/wordpress/wp-config.php -O /var/www/aprojectguru/wp-config.php
-sudo sed -i "s/<dbUserPassword>/$1/g" /var/www/aprojectguru/wp-config.php
-sudo sed -i "s/<backendIPAddress>/$2/g" /var/www/aprojectguru/wp-config.php
+sudo sed -i "s/<dbUserPassword>/$2/g" /var/www/aprojectguru/wp-config.php
+sudo sed -i "s/<backendIPAddress>/$3/g" /var/www/aprojectguru/wp-config.php
 wordpressSecretKeys="`sudo wget -qO- https://api.wordpress.org/secret-key/1.1/salt/`"
 sudo wget https://raw.githubusercontent.com/ganagus/Linux-str_replace/master/str_replace.pl -O /usr/local/bin/str_replace
 sudo chmod a+x /usr/local/bin/str_replace

@@ -17,6 +17,13 @@
         "description": "Number of VM instances to be created behind load balancer."
       }
     },
+    "domainName": {
+      "type": "string",
+      "minLength": 1,
+      "metadata": {
+        "description": "Domain name for wordpress site."
+      }
+    },
     "adminUsername": {
       "type": "string",
       "minLength": 1,
@@ -422,11 +429,11 @@
             "autoUpgradeMinorVersion": true,
             "settings": {
               "fileUris": [
-                "https://raw.githubusercontent.com/icgid/poc-iac-azure-linux-script/master/scripts/configure-web-server.sh"
+                "https://raw.githubusercontent.com/ganagus/my-servers/master/scripts/configure-web-server.sh"
               ]
             },
             "protectedSettings": {
-              "commandToExecute": "[concat('sudo bash configure-web-server.sh ', parameters('dbUserPassword'), ' ', variables('backendIPAddress'), ' ', parameters('wordpressSecretKeys'))]"
+              "commandToExecute": "[concat('sudo bash configure-web-server.sh ', parameters('domainName'), ' ', parameters('dbUserPassword'), ' ', variables('backendIPAddress'))]"
             }
           }
         }
@@ -534,7 +541,7 @@
             "autoUpgradeMinorVersion": true,
             "settings": {
               "fileUris": [
-                "https://raw.githubusercontent.com/icgid/poc-iac-azure-linux-script/master/scripts/configure-db-server.sh"
+                "https://raw.githubusercontent.com/ganagus/my-servers/master/scripts/configure-db-server.sh"
               ]
             },
             "protectedSettings": {

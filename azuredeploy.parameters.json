@@ -5,13 +5,16 @@
     "publicIPAddressDnsName": {
       "value": "penaweb"
     },
+    "domainName": {
+      "value": "aprojectguru.com"
+    },
     "adminUsername": {
       "value": "agus"
     },
     "adminPassword": {
       "reference": {
         "keyVault": {
-          "id": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/BaseResourceGroup-SEA/providers/Microsoft.KeyVault/vaults/AgusSuhantoVault')]"
+          "id": "/subscriptions/68da01f6-7176-4526-b7e6-baddc1517c8f/resourceGroups/BaseResourceGroup-SEA/providers/Microsoft.KeyVault/vaults/AgusSuhantoVault"
         },
         "secretName": "adminPassword"
       }
@@ -19,7 +22,7 @@
     "dbUserPassword": {
       "reference": {
         "keyVault": {
-          "id": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/BaseResourceGroup-SEA/providers/Microsoft.KeyVault/vaults/AgusSuhantoVault')]"
+          "id": "/subscriptions/68da01f6-7176-4526-b7e6-baddc1517c8f/resourceGroups/BaseResourceGroup-SEA/providers/Microsoft.KeyVault/vaults/AgusSuhantoVault"
         },
         "secretName": "dbUserPassword"
       }
@@ -27,7 +30,7 @@
     "sshKeyData": {
       "reference": {
         "keyVault": {
-          "id": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/BaseResourceGroup-SEA/providers/Microsoft.KeyVault/vaults/AgusSuhantoVault')]"
+          "id": "/subscriptions/68da01f6-7176-4526-b7e6-baddc1517c8f/resourceGroups/BaseResourceGroup-SEA/providers/Microsoft.KeyVault/vaults/AgusSuhantoVault"
         },
         "secretName": "sshKeyData"
       }
