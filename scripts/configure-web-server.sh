@@ -20,7 +20,7 @@ sudo ln -s /etc/nginx/sites-available/wordpress /etc/nginx/sites-enabled/
 sudo systemctl reload nginx
 
 # Upload existing wordpress configuration file
-sudo wget https://raw.githubusercontent.com/icgid/poc-iaac-azure-linux-script/master/configs/wordpress/wp-config.php -O /var/www/aprojectguru/wp-config.php
+sudo wget https://raw.githubusercontent.com/ganagus/my-servers/master/configs/wordpress/wp-config.php -O /var/www/aprojectguru/wp-config.php
 sudo sed -i "s/<dbUserPassword>/$1/g" /var/www/aprojectguru/wp-config.php
 sudo sed -i "s/<backendIPAddress>/$2/g" /var/www/aprojectguru/wp-config.php
 wordpressSecretKeys="`sudo wget -qO- https://api.wordpress.org/secret-key/1.1/salt/`"
@@ -28,6 +28,7 @@ sudo wget https://raw.githubusercontent.com/ganagus/Linux-str_replace/master/str
 sudo chmod a+x /usr/local/bin/str_replace
 sudo str_replace "<wordpressSecretKeys>" "$wordpressSecretKeys" /var/www/aprojectguru/wp-config.php
 sudo chown www-data:www-data /var/www/aprojectguru/wp-config.php
+sudo rm /var/www/aprojectguru/wp-config-sample.php
 
 # Install dotnet core
 #wget -q https://packages.microsoft.com/config/ubuntu/16.04/packages-microsoft-prod.deb
