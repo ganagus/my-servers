@@ -11,7 +11,7 @@
     "adminPassword": {
       "reference": {
         "keyVault": {
-          "id": "[resourceId('Microsoft.KeyVault/vaults', 'AgusSuhantoVault')]"
+          "id": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/BaseResourceGroup-SEA/providers/Microsoft.KeyVault/vaults/AgusSuhantoVault')]"
         },
         "secretName": "adminPassword"
       }
@@ -19,7 +19,7 @@
     "dbUserPassword": {
       "reference": {
         "keyVault": {
-          "id": "[resourceId('Microsoft.KeyVault/vaults', 'AgusSuhantoVault')]"
+          "id": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/BaseResourceGroup-SEA/providers/Microsoft.KeyVault/vaults/AgusSuhantoVault')]"
         },
         "secretName": "dbUserPassword"
       }
@@ -27,7 +27,7 @@
     "sshKeyData": {
       "reference": {
         "keyVault": {
-          "id": "[resourceId('Microsoft.KeyVault/vaults', 'AgusSuhantoVault')]"
+          "id": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/BaseResourceGroup-SEA/providers/Microsoft.KeyVault/vaults/AgusSuhantoVault')]"
         },
         "secretName": "sshKeyData"
       }
