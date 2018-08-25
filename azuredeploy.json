@@ -42,11 +42,10 @@
         "description": "SSH String."
       }
     },
-    "wordpressDomainName": {
-      "type": "string",
-      "minLength": 1,
+    "wordpressSecretKeys": {
+      "type": "securestring",
       "metadata": {
-        "description": "Domain name for wordpress site."
+        "description": "Wordpress secret keys generated from https://api.wordpress.org/secret-key/1.1/salt/."
       }
     }
   },
@@ -433,7 +432,7 @@
               ]
             },
             "protectedSettings": {
-              "commandToExecute": "[concat('sudo bash configure-web-server.sh ', parameters('wordpressDomainName'), ' ', parameters('dbUserPassword'), ' ', variables('backendIPAddress'))]"
+              "commandToExecute": "[concat('sudo bash configure-web-server.sh ', parameters('dbUserPassword'), ' ', variables('backendIPAddress'), ' ', parameters('wordpressSecretKeys'))]"
             }
           }
         }
