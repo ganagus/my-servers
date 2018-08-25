@@ -41,12 +41,6 @@
       "metadata": {
         "description": "SSH String."
       }
-    },
-    "wordpressSecretKeys": {
-      "type": "securestring",
-      "metadata": {
-        "description": "Wordpress secret keys generated from https://api.wordpress.org/secret-key/1.1/salt/."
-      }
     }
   },
   "variables": {
