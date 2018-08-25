@@ -17,7 +17,7 @@ sudo service nginx start
 sudo systemctl restart php7.0-fpm
 sudo wget https://raw.githubusercontent.com/ganagus/my-servers/master/configs/nginx/aprojectguru -O /etc/nginx/sites-available/aprojectguru
 sudo sed -i "s/<domainName>/$1/g" /etc/nginx/sites-available/aprojectguru
-sudo ln -s /etc/nginx/sites-available/wordpress /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/aprojectguru /etc/nginx/sites-enabled/
 sudo systemctl reload nginx
 
 # Upload existing wordpress configuration file
