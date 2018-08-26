@@ -5,6 +5,9 @@
     "publicIPAddressDnsName": {
       "value": "penaweb"
     },
+    "numberOfInstances": {
+      "value": 1
+    },
     "domainName": {
       "value": "aprojectguru.com"
     },
