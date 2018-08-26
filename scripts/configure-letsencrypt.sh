@@ -33,3 +33,7 @@ sudo certbot-auto certonly
 # Configure letsencrypt renewal cron job
 sudo wget https://raw.githubusercontent.com/ganagus/my-servers/master/cron-jobs/certbot-renew.sh -O /etc/cron.daily/certbot-renew.sh
 sudo chmod a+x /etc/cron.daily/certbot-renew.sh
+
+# Change nginx config file for the domain
+sudo wget https://raw.githubusercontent.com/ganagus/my-servers/master/configs/nginx/config.ssl -O /etc/nginx/sites-available/$1
+sudo nginx -s reload
