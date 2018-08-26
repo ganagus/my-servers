@@ -220,7 +220,7 @@
             "displayName": "public-ip-address"
         },
         "properties": {
-            "publicIPAllocationMethod": "Dynamic",
+            "publicIPAllocationMethod": "Static",
             "dnsSettings": {
                 "domainNameLabel": "[parameters('publicIPAddressDnsName')]"
             }
