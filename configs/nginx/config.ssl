@@ -57,10 +57,4 @@ server {
     location ~ /\.ht {
         deny all;
     }
-
-    # Required for LE certificate enrollment using certbot
-    location '/.well-known/acme-challenge' {
-        default_type "text/plain";
-        root /var/www/<domainName>;
-    }
 }

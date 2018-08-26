@@ -36,4 +36,5 @@ sudo chmod a+x /etc/cron.daily/certbot-renew.sh
 
 # Change nginx config file for the domain
 sudo wget https://raw.githubusercontent.com/ganagus/my-servers/master/configs/nginx/config.ssl -O /etc/nginx/sites-available/$1
+sudo sed -i "s/<domainName>/$1/g" /etc/nginx/sites-available/$1
 sudo nginx -s reload
