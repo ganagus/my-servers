@@ -139,6 +139,20 @@
                 "priority": 300,
                 "direction": "Inbound"
               }
+            },
+            {
+              "name": "ftp",
+              "properties": {
+                "description": "FTP endpoint",
+                "protocol": "Tcp",
+                "sourcePortRange": "*",
+                "destinationPortRange": "20,21,990,40000-50000",
+                "sourceAddressPrefix": "*",
+                "destinationAddressPrefix": "*",
+                "access": "Allow",
+                "priority": 300,
+                "direction": "Inbound"
+              }
             }  
           ]
       }
@@ -381,8 +395,9 @@
         "osProfile": {
           "computerName": "[concat(variables('frontendVmName'), copyIndex(1))]",
           "adminUsername": "[parameters('adminUserName')]",
+          "adminPassword": "[parameters('adminPassword')]",
           "linuxConfiguration": {
-            "disablePasswordAuthentication": true,
+            "disablePasswordAuthentication": false,
             "ssh": {
               "publicKeys": [
                 {
@@ -440,7 +455,7 @@
               ]
             },
             "protectedSettings": {
-              "commandToExecute": "[concat('sudo bash configure-web-server.sh ', parameters('domainName'), ' ', parameters('dbName'), ' ',parameters('dbPassword'), ' ', variables('backendIPAddress'))]"
+              "commandToExecute": "[concat('sudo bash configure-web-server.sh ', parameters('domainName'), ' ', parameters('dbName'), ' ',parameters('dbPassword'), ' ', variables('backendIPAddress'), ' ', parameters('adminUsername'))]"
             }
           }
         }
@@ -552,7 +567,7 @@
               ]
             },
             "protectedSettings": {
-              "commandToExecute": "[concat('sudo bash configure-db-server.sh ', parameters('adminPassword'), ' ', parameters('dbName'), ' ', parameters('dbPassword'))]"
+              "commandToExecute": "[concat('sudo bash configure-db-server.sh ', parameters('adminPassword'), ' ', parameters('dbName'), ' ', parameters('dbPassword'), ' ', parameters('adminUsername'))]"
             }
           }
         }
