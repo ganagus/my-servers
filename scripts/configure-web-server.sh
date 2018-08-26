@@ -36,13 +36,6 @@ sudo rm /var/www/$1/wp-config-sample.php
 sudo wget https://raw.githubusercontent.com/ganagus/my-servers/master/scripts/configure-letsencrypt.sh -O /root/configure-letsencrypt.sh
 sudo chmod a+x /root/configure-letsencrypt.sh
 
-# Configure vsftpd
-sudo apt-get install -y vsftpd
-sudo mkdir -p /home/$5/ftp
-sudo chown $5:$5 /home/$5/ftp
-sudo wget https://raw.githubusercontent.com/ganagus/my-servers/master/configs/ftp/vsftpd.conf -O /etc/vsftpd.conf
-sudo systemctl restart vsftpd
-
 # Install dotnet core
 #wget -q https://packages.microsoft.com/config/ubuntu/16.04/packages-microsoft-prod.deb
 #sudo dpkg -i packages-microsoft-prod.deb

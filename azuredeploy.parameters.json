@@ -5,6 +5,9 @@
     "publicIPAddressDnsName": {
       "value": "penaweb"
     },
+    "backendPublicIPAddressDnsName": {
+      "value": "penadb"
+    },
     "numberOfInstances": {
       "value": 1
     },

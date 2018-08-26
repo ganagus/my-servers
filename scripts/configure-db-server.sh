@@ -15,10 +15,3 @@ sudo wget https://raw.githubusercontent.com/ganagus/my-servers/master/scripts/cr
 sudo sed -i "s/<dbName>/$2/g" create-db.sql
 sudo sed -i "s/<dbPassword>/$3/g" create-db.sql
 sudo mysql -u"root" -p"$1" < create-db.sql
-
-# Configure vsftpd
-sudo apt-get install -y vsftpd
-sudo mkdir -p /home/$4/ftp
-sudo chown $4:$4 /home/$4/ftp
-sudo wget https://raw.githubusercontent.com/ganagus/my-servers/master/configs/ftp/vsftpd.conf -O /etc/vsftpd.conf
-sudo systemctl restart vsftpd
