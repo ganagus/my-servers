@@ -1,7 +1,7 @@
-CREATE DATABASE aprojectguru;
+CREATE DATABASE <dbName>;
 
-CREATE USER aprojectguru@'localhost' IDENTIFIED BY '<dbuserpassword>';
-CREATE USER aprojectguru@'%' IDENTIFIED BY '<dbuserpassword>';
+CREATE USER <dbName>@'localhost' IDENTIFIED BY '<dbPassword>';
+CREATE USER <dbName>@'%' IDENTIFIED BY '<dbPassword>';
 
-GRANT ALL PRIVILEGES ON aprojectguru.* TO aprojectguru@'localhost';
-GRANT ALL PRIVILEGES ON aprojectguru.* TO aprojectguru@'%';
+GRANT ALL PRIVILEGES ON <dbName>.* TO <dbName>@'localhost';
+GRANT ALL PRIVILEGES ON <dbName>.* TO <dbName>@'%';

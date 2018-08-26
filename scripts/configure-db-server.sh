@@ -12,5 +12,6 @@ sudo systemctl restart mysql
 
 # Create wordpress database
 sudo wget https://raw.githubusercontent.com/ganagus/my-servers/master/scripts/create-db.sql
-sudo sed -i "s/<dbuserpassword>/$2/g" create-db.sql
+sudo sed -i "s/<dbName>/$2/g" create-db.sql
+sudo sed -i "s/<dbPassword>/$3/g" create-db.sql
 sudo mysql -u"root" -p"$1" < create-db.sql

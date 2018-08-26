@@ -4,7 +4,7 @@ server {
 
     server_name <domainName> www.<domainName>;
 
-    root /var/www/aprojectguru;
+    root /var/www/<domainName>;
     index index.php;
 
     location / {

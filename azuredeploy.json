@@ -24,6 +24,13 @@
         "description": "Domain name for wordpress site."
       }
     },
+    "dbName": {
+      "type": "string",
+      "minLength": 1,
+      "metadata": {
+        "description": "The database name for wordpress site."
+      }
+    },
     "adminUsername": {
       "type": "string",
       "minLength": 1,
@@ -37,7 +44,7 @@
         "description": "Admin password for database VM and mysql root user."
       }
     },
-    "dbUserPassword": {
+    "dbPassword": {
       "type": "securestring",
       "metadata": {
         "description": "Database user password for application connection."
@@ -433,7 +440,7 @@
               ]
             },
             "protectedSettings": {
-              "commandToExecute": "[concat('sudo bash configure-web-server.sh ', parameters('domainName'), ' ', parameters('dbUserPassword'), ' ', variables('backendIPAddress'))]"
+              "commandToExecute": "[concat('sudo bash configure-web-server.sh ', parameters('domainName'), ' ', parameters('dbName'), ' ',parameters('dbPassword'), ' ', variables('backendIPAddress'))]"
             }
           }
         }
@@ -545,7 +552,7 @@
               ]
             },
             "protectedSettings": {
-              "commandToExecute": "[concat('sudo bash configure-db-server.sh ', parameters('adminPassword'), ' ', parameters('dbUserPassword'))]"
+              "commandToExecute": "[concat('sudo bash configure-db-server.sh ', parameters('adminPassword'), ' ', parameters('dbName'), ' ', parameters('dbPassword'))]"
             }
           }
         }

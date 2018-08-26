@@ -8,6 +8,9 @@
     "domainName": {
       "value": "aprojectguru.com"
     },
+    "dbName": {
+      "value": "aprojectguru"
+    },
     "adminUsername": {
       "value": "agus"
     },
@@ -19,12 +22,12 @@
         "secretName": "adminPassword"
       }
     },
-    "dbUserPassword": {
+    "dbPassword": {
       "reference": {
         "keyVault": {
           "id": "/subscriptions/68da01f6-7176-4526-b7e6-baddc1517c8f/resourceGroups/BaseResourceGroup-SEA/providers/Microsoft.KeyVault/vaults/AgusSuhantoVault"
         },
-        "secretName": "dbUserPassword"
+        "secretName": "dbPassword"
       }
     },
     "sshKeyData": {

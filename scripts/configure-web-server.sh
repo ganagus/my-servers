@@ -2,12 +2,12 @@
 
 sudo apt-get update
 
-# Donwload wordpress from wordpress.org, and copy it to /var/www/aprojectguru
+# Donwload wordpress from wordpress.org, and copy it to /var/www/<domainName>
 sudo wget https://wordpress.org/latest.tar.gz
 sudo tar -xvzf latest.tar.gz
-sudo mkdir -p /var/www/aprojectguru
-sudo cp -R wordpress/* /var/www/aprojectguru/
-sudo chown -R www-data:www-data /var/www/aprojectguru/
+sudo mkdir -p /var/www/$1
+sudo cp -R wordpress/* /var/www/$1/
+sudo chown -R www-data:www-data /var/www/$1/
 
 # Install nginx
 sudo apt-get install -y nginx
@@ -15,21 +15,22 @@ sudo apt-get install -y php-fpm php-mysql
 sudo sed -i "s/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g" /etc/php/7.0/fpm/php.ini
 sudo service nginx start
 sudo systemctl restart php7.0-fpm
-sudo wget https://raw.githubusercontent.com/ganagus/my-servers/master/configs/nginx/aprojectguru -O /etc/nginx/sites-available/aprojectguru
-sudo sed -i "s/<domainName>/$1/g" /etc/nginx/sites-available/aprojectguru
-sudo ln -s /etc/nginx/sites-available/aprojectguru /etc/nginx/sites-enabled/
+sudo wget https://raw.githubusercontent.com/ganagus/my-servers/master/configs/nginx/config -O /etc/nginx/sites-available/$1
+sudo sed -i "s/<domainName>/$1/g" /etc/nginx/sites-available/$1
+sudo ln -s /etc/nginx/sites-available/$1 /etc/nginx/sites-enabled/
 sudo systemctl reload nginx
 
 # Upload existing wordpress configuration file
-sudo wget https://raw.githubusercontent.com/ganagus/my-servers/master/configs/wordpress/wp-config.php -O /var/www/aprojectguru/wp-config.php
-sudo sed -i "s/<dbUserPassword>/$2/g" /var/www/aprojectguru/wp-config.php
-sudo sed -i "s/<backendIPAddress>/$3/g" /var/www/aprojectguru/wp-config.php
+sudo wget https://raw.githubusercontent.com/ganagus/my-servers/master/configs/wordpress/wp-config.php -O /var/www/$1/wp-config.php
+sudo sed -i "s/<dbName>/$2/g" /var/www/$1/wp-config.php
+sudo sed -i "s/<dbPassword>/$3/g" /var/www/$1/wp-config.php
+sudo sed -i "s/<backendIPAddress>/$4/g" /var/www/$1/wp-config.php
 wordpressSecretKeys="`sudo wget -qO- https://api.wordpress.org/secret-key/1.1/salt/`"
 sudo wget https://raw.githubusercontent.com/ganagus/Linux-str_replace/master/str_replace.pl -O /usr/local/bin/str_replace
 sudo chmod a+x /usr/local/bin/str_replace
-sudo str_replace "<wordpressSecretKeys>" "$wordpressSecretKeys" /var/www/aprojectguru/wp-config.php
-sudo chown www-data:www-data /var/www/aprojectguru/wp-config.php
-sudo rm /var/www/aprojectguru/wp-config-sample.php
+sudo str_replace "<wordpressSecretKeys>" "$wordpressSecretKeys" /var/www/$1/wp-config.php
+sudo chown www-data:www-data /var/www/$1/wp-config.php
+sudo rm /var/www/$1/wp-config-sample.php
 
 # Install dotnet core
 #wget -q https://packages.microsoft.com/config/ubuntu/16.04/packages-microsoft-prod.deb
