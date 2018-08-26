@@ -33,7 +33,7 @@ sudo chown www-data:www-data /var/www/$1/wp-config.php
 sudo rm /var/www/$1/wp-config-sample.php
 
 # Copy configure-letsencrypt.sh to /root
-sudo wget https://raw.githubusercontent.com/ganagus/my-servers/master/scripts/configure-letsencrypt.sh -O ~/configure-letsencrypt.sh
+sudo wget https://raw.githubusercontent.com/ganagus/my-servers/master/scripts/configure-letsencrypt.sh -O /root/configure-letsencrypt.sh
 sudo chmod a+x /root/configure-letsencrypt.sh
 
 # Install dotnet core
