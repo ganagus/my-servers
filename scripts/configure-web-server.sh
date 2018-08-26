@@ -32,6 +32,21 @@ sudo str_replace "<wordpressSecretKeys>" "$wordpressSecretKeys" /var/www/$1/wp-c
 sudo chown www-data:www-data /var/www/$1/wp-config.php
 sudo rm /var/www/$1/wp-config-sample.php
 
+# Configure letsencrypt certificates
+sudo mkdir /etc/letsencrypt
+sudo wget https://raw.githubusercontent.com/ganagus/my-servers/master/configs/letsencrypt/cli.ini -O /etc/letsencrypt/cli.ini
+export HOME="/root"
+export PATH="${PATH}:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+sudo wget https://dl.eff.org/certbot-auto
+sudo chmod a+x certbot-auto
+sudo mv certbot-auto /usr/local/bin
+sudo certbot-auto --noninteractive --os-packages-only
+sudo certbot-auto certonly
+
+# Configure letsencrypt renewal cron job
+sudo wget https://raw.githubusercontent.com/ganagus/my-servers/master/cron-jobs/certbot-renew.sh -O /etc/cron.daily/certbot-renew.sh
+sudo chmod a+x /etc/cron.daily/certbot-renew.sh
+
 # Install dotnet core
 #wget -q https://packages.microsoft.com/config/ubuntu/16.04/packages-microsoft-prod.deb
 #sudo dpkg -i packages-microsoft-prod.deb
