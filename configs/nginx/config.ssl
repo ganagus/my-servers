@@ -6,7 +6,7 @@ server {
     listen 80;
 
     server_name <domainName> www.<domainName>;
-    rewrite ^ https://$http_host$request_uri? permanent;    # force redirect http to https
+    rewrite ^ https://<domainName>$request_uri? permanent;    # force redirect http to https
 }
 
 server {
@@ -30,10 +30,6 @@ server {
 
     # Disable SSLv3
     ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
-
-    # Diffie-Hellman parameter for DHE ciphersuites
-    # $ sudo openssl dhparam -out /etc/ssl/certs/dhparam.pem 4096
-    ssl_dhparam /etc/ssl/certs/dhparam.pem;
 
     # Enable HSTS (https://developer.mozilla.org/en-US/docs/Security/HTTP_Strict_Transport_Security)
     add_header Strict-Transport-Security "max-age=63072000; includeSubdomains";  
