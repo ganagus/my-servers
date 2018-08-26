@@ -77,10 +77,12 @@
     "publicIPAddressName": "PublicIPAddress",
     "lbName": "LoadBalancer",
     "lbRule": "HTTP",
+    "lbRuleSSL": "HTTPS",
     "lbBackendPool": "lbBackendPool",
     "lbId": "[resourceId('Microsoft.Network/loadBalancers', variables('lbName'))]",
     "lbPoolId": "[concat(variables('lbId'),'/backendAddressPools/',variables('lbBackendPool'))]",
     "lbProbeId": "[concat(variables('lbId'),'/probes/lbProbe')]",
+    "lbProbeSSLId": "[concat(variables('lbId'),'/probes/lbProbeSSL')]",
     "ipConfigId": "[concat(variables('lbId'),'/frontendIPConfigurations/LoadBalancerFrontEnd')]",
     "frontendNetworkInterfaceName": "FrontendNetworkInterface",
     "vmSize": "Standard_B2s",
@@ -299,6 +301,25 @@
                 "id": "[variables('lbProbeId')]"
               }
             }
+          },
+          {
+            "name": "[variables('lbRuleSSL')]",
+            "properties": {
+              "frontendIPConfiguration": {
+                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('lbName')), '/frontendIPConfigurations/LoadBalancerFrontend')]"
+              },
+              "backendAddressPool": {
+                "id": "[variables('lbPoolId')]"
+              },
+              "protocol": "Tcp",
+              "frontendPort": 443,
+              "backendPort": 443,
+              "enableFloatingIP": false,
+              "idleTimeoutInMinutes": 5,
+              "probe": {
+                "id": "[variables('lbProbeSSLId')]"
+              }
+            }
           }
         ],
         "probes": [
@@ -310,6 +331,15 @@
               "numberOfProbes": 2
             },
             "name": "lbProbe"
+          },
+          {
+            "properties": {
+              "protocol": "Tcp",
+              "port": 443,
+              "intervalInSeconds": 15,
+              "numberOfProbes": 2
+            },
+            "name": "lbProbeSSL"
           }
         ]
       }
@@ -462,7 +492,7 @@
               ]
             },
             "protectedSettings": {
-              "commandToExecute": "[concat('sudo bash configure-web-server.sh ', parameters('domainName'), ' ', parameters('dbName'), ' ',parameters('dbPassword'), ' ', variables('backendIPAddress'))]"
+              "commandToExecute": "[concat('sudo bash configure-web-server.sh ', parameters('domainName'), ' ', parameters('dbName'), ' ',parameters('dbPassword'), ' ', variables('backendIPAddress'), ' ', parameters('adminUsername'))]"
             }
           }
         }
@@ -471,7 +501,7 @@
     {
       "apiVersion": "2015-06-15",
       "type": "Microsoft.Network/publicIPAddresses",
-      "name": "backendPublicIPAddress",
+      "name": "BackendPublicIPAddress",
       "location": "[resourceGroup().location]",
       "tags": {
           "displayName": "backend-public-ip-address"
@@ -494,7 +524,7 @@
       "dependsOn": [
         "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]",
         "[resourceId('Microsoft.Network/networkSecurityGroups', variables('backendNsgName'))]",
-        "[resourceId('Microsoft.Network/networkSecurityGroups', 'backendPublicIPAddress')]"
+        "[resourceId('Microsoft.Network/publicIPAddresses', 'BackendPublicIPAddress')]"
       ],
       "properties": {
         "ipConfigurations": [
@@ -508,7 +538,7 @@
               },
               "privateIPAddressVersion": "IPv4",
               "publicIPAddress": {
-                "id": "[resourceId('Microsoft.Network/publicIPAddresses', 'backendPublicIPAddress')]"
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses', 'BackendPublicIPAddress')]"
               }
             }
           }

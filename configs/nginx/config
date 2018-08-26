@@ -7,8 +7,24 @@ server {
     root /var/www/<domainName>;
     index index.php;
 
+    location = /favicon.ico {
+        log_not_found off;
+        access_log off;
+    }
+    
+    location = /robots.txt {
+        log_not_found off; 
+        access_log off; 
+        allow all;
+    }
+
+    location ~* \.(css|gif|ico|jpeg|jpg|js|png)$ {
+        expires max;
+        log_not_found off;
+    }
+    
     location / {
-        try_files $uri $uri/ =404;
+        try_files $uri $uri/ /index.php$is_args$args;
     }
 
     location ~ \.php$ {
@@ -20,7 +36,7 @@ server {
         deny all;
     }
 
-        # Required for LE certificate enrollment using certbot
+    # Required for LE certificate enrollment using certbot
     location '/.well-known/acme-challenge' {
         default_type "text/plain";
         root /var/www/<domainName>;

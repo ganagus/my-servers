@@ -7,11 +7,16 @@ sudo wget https://wordpress.org/latest.tar.gz
 sudo tar -xvzf latest.tar.gz
 sudo mkdir -p /var/www/$1
 sudo cp -R wordpress/* /var/www/$1/
-sudo chown -R www-data:www-data /var/www/$1/
+sudo chown -R $5:www-data /var/www/$1/
+sudo find /var/www/$1 -type d -exec chmod g+s {} \;
+sudo chmod g+w /var/www/$1/wp-content
+sudo chmod -R g+w /var/www/$1/wp-content/themes
+sudo chmod -R g+w /var/www/$1/wp-content/plugins
 
 # Install nginx
 sudo apt-get install -y nginx
 sudo apt-get install -y php-fpm php-mysql
+sudo apt-get install -y php-curl php-gd php-mbstring php-mcrypt php-xml php-xmlrpc
 sudo sed -i "s/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g" /etc/php/7.0/fpm/php.ini
 sudo service nginx start
 sudo systemctl restart php7.0-fpm
