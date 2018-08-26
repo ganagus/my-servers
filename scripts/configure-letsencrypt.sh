@@ -19,7 +19,7 @@ set -o nounset
 set -o errexit
 
 # Configure letsencrypt certificates
-sudo mkdir /etc/letsencrypt
+sudo mkdir -p /etc/letsencrypt
 sudo wget https://raw.githubusercontent.com/ganagus/my-servers/master/configs/letsencrypt/cli.ini -O /etc/letsencrypt/cli.ini
 sudo sed -i "s/<domainName>/$1/g" /etc/letsencrypt/cli.ini
 export HOME="/root"
