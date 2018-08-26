@@ -35,6 +35,7 @@ sudo rm /var/www/$1/wp-config-sample.php
 # Configure letsencrypt certificates
 sudo mkdir /etc/letsencrypt
 sudo wget https://raw.githubusercontent.com/ganagus/my-servers/master/configs/letsencrypt/cli.ini -O /etc/letsencrypt/cli.ini
+sudo sed -i "s/<domainName>/$1/g" /etc/letsencrypt/cli.ini
 export HOME="/root"
 export PATH="${PATH}:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 sudo wget https://dl.eff.org/certbot-auto
