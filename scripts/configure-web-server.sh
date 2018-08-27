@@ -34,7 +34,7 @@ wordpressSecretKeys="`sudo wget -qO- https://api.wordpress.org/secret-key/1.1/sa
 sudo wget https://raw.githubusercontent.com/ganagus/Linux-str_replace/master/str_replace.pl -O /usr/local/bin/str_replace
 sudo chmod a+x /usr/local/bin/str_replace
 sudo str_replace "<wordpressSecretKeys>" "$wordpressSecretKeys" /var/www/$1/wp-config.php
-sudo chown www-data:www-data /var/www/$1/wp-config.php
+sudo chown $5:www-data /var/www/$1/wp-config.php
 sudo rm /var/www/$1/wp-config-sample.php
 
 # Copy configure-letsencrypt.sh to /root
