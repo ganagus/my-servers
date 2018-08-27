@@ -13,6 +13,8 @@ This is the code that I use to deploy my servers on Azure that hosts the followi
 
 However, source code for all those sites are hosted in separate different private projects hosted on my VSTS.
 
+If you plan to use this project for your own server infrastructure, you have to change some codes in azuredeploye.parameters.json file, because it uses my vault to retrieve values for some sensitive data. You can use your own vault, or delete them so that deployment tool will prompt you while deploying.
+
 ### Deployment
 First, create the resource group:
 
