@@ -30,6 +30,9 @@ sudo mv certbot-auto /usr/local/bin
 sudo certbot-auto --noninteractive --os-packages-only
 sudo certbot-auto certonly
 
+# Diffie-Hellman parameter for DHE ciphersuites
+sudo openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048
+
 # Configure letsencrypt renewal cron job
 sudo wget https://raw.githubusercontent.com/ganagus/my-servers/master/cron-jobs/certbot-renew.sh -O /etc/cron.daily/certbot-renew.sh
 sudo chmod a+x /etc/cron.daily/certbot-renew.sh

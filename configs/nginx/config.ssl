@@ -12,7 +12,7 @@ server {
 server {
     listen 443;
     ssl on;
-    ssl_certificate /etc/letsencrypt/live/<domainName>/cert.pem;
+    ssl_certificate /etc/letsencrypt/live/<domainName>/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/<domainName>/privkey.pem;
 
     server_name <domainName>;
@@ -30,6 +30,10 @@ server {
 
     # Disable SSLv3
     ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+
+    # Diffie-Hellman parameter for DHE ciphersuites
+    # $ sudo openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048
+    ssl_dhparam /etc/ssl/certs/dhparam.pem;
 
     # Enable HSTS (https://developer.mozilla.org/en-US/docs/Security/HTTP_Strict_Transport_Security)
     add_header Strict-Transport-Security "max-age=63072000; includeSubdomains";  
