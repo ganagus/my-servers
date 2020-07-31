@@ -7,7 +7,6 @@ My servers infrastructure on Azure. This project is based on the following proje
 * Script to configure SSL site using [Letsencrypt](https://letsencrypt.org/)
 
 This is the code that I use to deploy my servers on Azure that hosts the following sites:
-* [blog.pena.id](https://blog.pena.id)
 * [pena.id](https://pena.id)
 * [renang.com](https://renang.com)
 
