@@ -88,7 +88,7 @@
     "vmSize": "Standard_B2s",
     "vmImagePublisher": "Canonical",
     "vmImageOffer": "UbuntuServer",
-    "vmSku": "16.04-LTS",
+    "vmSku": "18.04-LTS",
     "vmStorageAccountType": "Premium_LRS",
     "frontendVmName": "ubuntu-web",
     "sshKeyPath": "[concat('/home/',parameters('adminUsername'),'/.ssh/authorized_keys')]",
