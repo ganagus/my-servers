@@ -15,12 +15,17 @@ sudo chmod -R g+w /var/www/$1/wp-content/plugins
 
 # Install nginx
 sudo apt-get install -y nginx
-sudo apt-get install -y php-fpm php-mysql
-sudo apt-get install -y php-curl php-gd php-mbstring php-mcrypt php-xml php-xmlrpc
-sudo sed -i "s/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g" /etc/php/7.0/fpm/php.ini
+
+# Install PHP 7.3
+sudo apt-get install -y software-properties-common
+sudo add-apt-repository -y ppa:ondrej/php
+sudo apt-get update
+sudo apt-get install -y php7.3 php7.3-fpm php-mysql
+sudo apt-get install -y php-curl php-gd php-mbstring php-xml php-xmlrpc
+sudo sed -i "s/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g" /etc/php/7.3/fpm/php.ini
 sudo service nginx start
-sudo systemctl restart php7.0-fpm
-sudo wget https://raw.githubusercontent.com/ganagus/my-servers/master/configs/nginx/config -O /etc/nginx/sites-available/$1
+sudo systemctl restart php7.3-fpm
+sudo wget https://raw.githubusercontent.com/ganagus/my-servers/master/configs/nginx/config.ssl -O /etc/nginx/sites-available/$1
 sudo sed -i "s/<domainName>/$1/g" /etc/nginx/sites-available/$1
 sudo ln -s /etc/nginx/sites-available/$1 /etc/nginx/sites-enabled/
 sudo systemctl reload nginx
