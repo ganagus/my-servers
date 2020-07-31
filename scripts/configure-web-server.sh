@@ -20,8 +20,8 @@ sudo apt-get install -y nginx
 sudo apt-get install -y software-properties-common
 sudo add-apt-repository -y ppa:ondrej/php
 sudo apt-get update
-sudo apt-get install -y php7.3 php7.3-fpm php-mysql
-sudo apt-get install -y php-curl php-gd php-mbstring php-xml php-xmlrpc
+sudo apt-get install -y php7.3 php7.3-fpm php7.3-mysql php7.3-cli
+sudo apt-get install -y php7.3-curl php7.3-gd php7.3-mbstring php7.3-xml php7.3-xmlrpc php7.3-zip
 sudo sed -i "s/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g" /etc/php/7.3/fpm/php.ini
 sudo service nginx start
 sudo systemctl restart php7.3-fpm
