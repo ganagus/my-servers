@@ -350,9 +350,6 @@
       "type": "Microsoft.Network/loadBalancers/inboundNatRules",
       "name": "[concat(variables('lbName'), '/', 'SSH-VM', copyIndex(1))]",
       "location": "[resourceGroup().location]",
-      "tags": {
-        "displayName": "load-balancer-nat-rule"
-      },
       "copy": {
         "name": "lbNatLoop",
         "count": "[parameters('numberOfInstances')]"
