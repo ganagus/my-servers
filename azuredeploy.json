@@ -624,7 +624,7 @@
               ]
             },
             "protectedSettings": {
-              "commandToExecute": "[concat('sudo bash configure-db-server.sh ', parameters('adminPassword'), ' ', parameters('dbName'), ' ', parameters('dbPassword'))]"
+              "commandToExecute": "[concat('sudo bash configure-db-server.sh ', parameters('adminPassword'), ' ', parameters('dbName'), ' ', parameters('dbPassword'), ' ', variables('frontendIPAddress'))]"
             }
           }
         }

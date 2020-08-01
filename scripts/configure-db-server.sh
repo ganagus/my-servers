@@ -7,7 +7,6 @@ export DEBIAN_FRONTEND="noninteractive"
 sudo debconf-set-selections <<< "mysql-server mysql-server/root_password password $1"
 sudo debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $1"
 sudo apt-get install -y mysql-server-5.7
-mysql_secure_installation
 sudo sed -i "s/= 127.0.0.1/= 0.0.0.0/g" /etc/mysql/mysql.conf.d/mysqld.cnf
 sudo systemctl restart mysql
 
