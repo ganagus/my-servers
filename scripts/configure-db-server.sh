@@ -15,7 +15,7 @@ sudo systemctl restart mysql
 sudo wget https://raw.githubusercontent.com/ganagus/my-servers/master/scripts/create-db.sql
 sudo sed -i "s/<dbName>/$2/g" create-db.sql
 sudo sed -i "s/<dbPassword>/$3/g" create-db.sql
-sudo mysql -u"root" -p"$1" < create-db.sql
+mysql -u"root" -p"$1" < create-db.sql
 
 # Install mongodb from mongodb-org
 sudo wget -qO - https://www.mongodb.org/static/pgp/server-4.4.asc | sudo apt-key add -
