@@ -94,7 +94,7 @@
     "sshKeyPath": "[concat('/home/',parameters('adminUsername'),'/.ssh/authorized_keys')]",
     "backendNetworkInterfaceName": "BackendNetworkInterface",
     "backendVmName": "ubuntu-db",
-    "frontendIPAddress": "192.168.102.3",
+    "frontendIPAddress": "192.168.101.4",
     "backendIPAddress": "192.168.102.4"
   },
   "resources": [

@@ -24,4 +24,4 @@ sudo apt-get install -y mongodb-org
 sudo systemctl start mongod
 sudo systemctl enable mongod
 # add frontendIPAddress to list of allowed IPs
-sudo sed -i "s/bind_ip = 127.0.0.1/bind_ip = 127.0.0.1,$4/g" /etc/mongod.conf
+#sudo sed -i "s/bind_ip = 127.0.0.1/bind_ip = 127.0.0.1,$4/g" /etc/mongod.conf
