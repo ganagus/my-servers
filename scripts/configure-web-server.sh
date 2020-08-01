@@ -46,6 +46,16 @@ sudo rm /var/www/$1/wp-config-sample.php
 sudo wget https://raw.githubusercontent.com/ganagus/my-servers/master/scripts/configure-letsencrypt.sh -O /root/configure-letsencrypt.sh
 sudo chmod a+x /root/configure-letsencrypt.sh
 
+# After provisioning, configure SSL by running the following commands:
+# sudo su
+# /root/configure-letsencrypt.sh <domain-name>
+#
+# Then use the config.ssl for the virtual host
+
+# Installing nodejs and npm
+sudo apt install -y nodejs
+sudo apt install -y npm
+
 # Install dotnet core
 #wget -q https://packages.microsoft.com/config/ubuntu/16.04/packages-microsoft-prod.deb
 #sudo dpkg -i packages-microsoft-prod.deb

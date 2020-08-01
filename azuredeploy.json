@@ -94,6 +94,7 @@
     "sshKeyPath": "[concat('/home/',parameters('adminUsername'),'/.ssh/authorized_keys')]",
     "backendNetworkInterfaceName": "BackendNetworkInterface",
     "backendVmName": "ubuntu-db",
+    "frontendIPAddress": "192.168.102.3",
     "backendIPAddress": "192.168.102.4"
   },
   "resources": [
@@ -392,6 +393,7 @@
           {
             "name": "ipconfig",
             "properties": {
+              "privateIPAddress": "[variables('frontendIPAddress')]",
               "privateIPAllocationMethod": "Dynamic",
               "subnet": {
                 "id": "[variables('frontendSubnetRef')]"
@@ -622,7 +624,7 @@
               ]
             },
             "protectedSettings": {
-              "commandToExecute": "[concat('sudo bash configure-db-server.sh ', parameters('adminPassword'), ' ', parameters('dbName'), ' ', parameters('dbPassword'))]"
+              "commandToExecute": "[concat('sudo bash configure-db-server.sh ', parameters('adminPassword'), ' ', parameters('dbName'), ' ', parameters('dbPassword'), ' ', variables('frontendIPAddress'))]"
             }
           }
         }
