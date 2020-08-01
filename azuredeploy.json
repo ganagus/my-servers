@@ -346,7 +346,7 @@
       }
     },
     {
-      "apiVersion": "2015-06-15",
+      "apiVersion": "2018-04-01",
       "type": "Microsoft.Network/loadBalancers/inboundNatRules",
       "name": "[concat(variables('lbName'), '/', 'SSH-VM', copyIndex(1))]",
       "location": "[resourceGroup().location]",
@@ -624,7 +624,7 @@
               ]
             },
             "protectedSettings": {
-              "commandToExecute": "[concat('sudo bash configure-db-server.sh ', parameters('adminPassword'), ' ', parameters('dbName'), ' ', parameters('dbPassword'), ' ', variables('frontendIPAddress'))]"
+              "commandToExecute": "[concat('sudo bash configure-db-server.sh ', parameters('adminPassword'), ' ', parameters('dbName'), ' ', parameters('dbPassword'))]"
             }
           }
         }
